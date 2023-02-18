@@ -1,0 +1,290 @@
+{
+  "group": [
+    {
+      "id": 1,
+      "title": "花蓮",
+      "cover": "https://pix10.agoda.net/geo/city/23127/1_23127_02.jpg?ca=6&ce=1&s=1920x822",
+      "updateTime": "2022-11-30T12:42:13.000Z",
+      "costs": [
+        {
+          "id": 1,
+          "title": "隨機食物1",
+          "price": 777,
+          "costTime": "2022-11-29T12:42:13.000Z",
+          "payers": [
+            "David",
+            "Hsuan"
+          ],
+          "cost": 50
+        },
+        {
+          "id": 2,
+          "title": "隨機食物2",
+          "price": 154,
+          "costTime": "2022-11-28T12:42:13.000Z",
+          "payers": [
+            "Yuwen"
+          ],
+          "cost": 40
+        },
+        {
+          "id": 3,
+          "title": "隨機食物",
+          "price": 456,
+          "costTime": "2022-11-27T12:42:13.000Z",
+          "payers": [
+            "Alex"
+          ],
+          "cost": 90
+        }
+      ],
+      "members": [
+        {
+          "id": 111,
+          "name": "Yuwen"
+        },
+        {
+          "id": 222,
+          "name": "David"
+        },
+        {
+          "id": 333,
+          "name": "Hsuan"
+        },
+        {
+          "id": 444,
+          "name": "Alex"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "台東",
+      "updateTime": "2022-10-30T12:42:13.000Z",
+      "Cover": "https://pix10.agoda.net/geo/city/23127/1_23127_02.jpg?ca=6&ce=1&s=1920x822",
+      "groupMembers": [
+        "David",
+        "Hsuan",
+        "Yuwen"
+      ],
+      "costs": [
+        {
+          "id": 1,
+          "title": "隨機食物",
+          "price": 777,
+          "costTime": "2022-11-29T12:42:13.000Z",
+          "payers": [
+            "David",
+            "Hsuan"
+          ],
+          "cost": 50
+        },
+        {
+          "id": 2,
+          "title": "隨機食物",
+          "price": 154,
+          "costTime": "2022-11-28T12:42:13.000Z",
+          "payers": [
+            "Yuwen"
+          ],
+          "cost": 40
+        },
+        {
+          "id": 3,
+          "title": "隨機食物",
+          "price": 456,
+          "costTime": "2022-11-27T12:42:13.000Z",
+          "payers": [
+            "Alex"
+          ],
+          "cost": 90
+        }
+      ]
+    }
+  ],
+  "user": {
+    "id": 111,
+    "name": "Yuwen",
+    "avatar": "https://i.pravatar.cc/300",
+    "groups": [
+      {
+        "id": 1,
+        "title": "花蓮",
+        "updateTime": "2022-11-30T12:42:13.000Z",
+        "Cover": "https://pix10.agoda.net/geo/city/23127/1_23127_02.jpg?ca=6&ce=1&s=1920x822"
+      },
+      {
+        "id": 2,
+        "title": "台東",
+        "updateTime": "2022-10-30T12:42:13.000Z",
+        "Cover": "https://pix10.agoda.net/geo/city/23127/1_23127_02.jpg?ca=6&ce=1&s=1920x822"
+      }
+    ]
+  },
+  "costs": [
+    {
+      "id": 1,
+      "costTime": "2022-11-30T12:42:13.000Z",
+      "payers": [
+        {
+          "id": 222,
+          "name": "David",
+          "price": 700,
+          "propotion": "fix"
+        },
+        {
+          "id": 333,
+          "name": "Hsuan",
+          "price": 27,
+          "propotion": "fix"
+        }
+      ],
+      "price": 777,
+      "title": "隨機食物1",
+      "note": "真的隨機",
+      "consumers": [
+        {
+          "id": 222,
+          "name": "David",
+          "price": 259,
+          "propotion": 1
+        },
+        {
+          "id": 333,
+          "name": "Hsuan",
+          "price": 259,
+          "propotion": 1
+        },
+        {
+          "id": 111,
+          "name": "Yuwen",
+          "price": 259,
+          "propotion": 1
+        }
+      ],
+      "photos": [
+        "https://www.themealdb.com/images/media/meals/yqwtvu1487426027.jpg"
+      ]
+    },
+    {
+      "id": 2,
+      "costTime": "2022-11-28T12:42:13.000Z",
+      "payers": [
+        {
+          "id": 111,
+          "name": "Yuwen",
+          "price": 154,
+          "propotion": 1
+        }
+      ],
+      "price": 154,
+      "title": "隨機食物2",
+      "note": "真的隨機",
+      "consumers": [
+        {
+          "id": 111,
+          "name": "Yuwen",
+          "price": 154,
+          "propotion": 1
+        }
+      ],
+      "photos": [
+        "https://www.themealdb.com/images/media/meals/ysqupp1511640538.jpg",
+        "https://www.themealdb.com/images/media/meals/ysqupp1511640538.jpg",
+        "https://www.themealdb.com/images/media/meals/xxrxux1503070723.jpg",
+        "https://www.themealdb.com/images/media/meals/vtxyxv1483567157.jpg",
+        "https://storage.googleapis.com/lightsplit/g/4fe218f1-16bd-4c77-859c-db4240b49616/1d1a609e-8632-4977-a14f-6fe4444ea706"
+      ]
+    },
+    {
+      "costTime": "2023-02-10T13:53:00.000Z",
+      "payers": [
+        {
+          "id": 111,
+          "name": "Yuwen",
+          "price": 321,
+          "propotion": 1
+        }
+      ],
+      "consumers": [
+        {
+          "id": 111,
+          "name": "Yuwen",
+          "propotion": 1,
+          "price": 80.25
+        },
+        {
+          "id": 222,
+          "name": "David",
+          "propotion": 1,
+          "price": 80.25
+        },
+        {
+          "id": 333,
+          "name": "Hsuan",
+          "propotion": 1,
+          "price": 80.25
+        },
+        {
+          "id": 444,
+          "name": "Alex",
+          "propotion": 1,
+          "price": 80.25
+        }
+      ],
+      "price": 321,
+      "title": "測試3",
+      "note": "",
+      "photos": [],
+      "id": 3
+    },
+    {
+      "id": 837,
+      "costTime": "2023-02-18T05:29:00.000Z",
+      "payers": [
+        {
+          "id": 111,
+          "name": "Yuwen",
+          "price": 10401,
+          "propotion": 1
+        },
+        {
+          "id": 333,
+          "name": "Hsuan",
+          "price": 10401,
+          "propotion": 1
+        },
+        {
+          "id": 222,
+          "name": "David",
+          "price": 2321,
+          "propotion": "fix"
+        }
+      ],
+      "consumers": [
+        {
+          "id": 111,
+          "name": "Yuwen",
+          "propotion": 1,
+          "price": 3853.834
+        },
+        {
+          "id": 222,
+          "name": "David",
+          "propotion": 4,
+          "price": 15415.333
+        },
+        {
+          "id": 444,
+          "name": "Alex",
+          "propotion": 1,
+          "price": 3853.833
+        }
+      ],
+      "price": 23123,
+      "title": "1231",
+      "note": "ca",
+      "photos": []
+    }
+  ]
+}
