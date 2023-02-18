@@ -2,51 +2,40 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectAllCosts, fetchAllCost, fetchGroupById } from './costSlice'
 import { RootState, AppDispatch } from '../../app/store'
 import { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
+import CostListItem from './CostListItem'
 
 const CostList = () => {
   const dispatch: AppDispatch = useDispatch()
-  const costs = useSelector(selectAllCosts)
-  const CostStatus = useSelector((state: RootState) => state.costs.status)
-  const CostError = useSelector((state: RootState) => state.costs.error)
+  const costStatus = useSelector((state: RootState) => state.costs.status)
+  const costError = useSelector((state: RootState) => state.costs.error)
+  const costs =
+    useSelector((state: RootState) => selectAllCosts(state.costs)) || []
   const navigate = useNavigate()
-  let content
 
+  let content
   useEffect(() => {
-    if (CostStatus === 'idle') {
+    if (costStatus === 'idle') {
       dispatch(fetchGroupById(1))
       dispatch(fetchAllCost())
     }
   }, [])
 
-  switch (CostStatus) {
+  switch (costStatus) {
     case 'loading':
       content = <p>Loaing</p>
       return content
 
     case 'failed':
-      content = <p>{CostError}</p>
+      content = <p>{costError}</p>
       return content
 
     default:
+      if (!costs) return null
       content = costs.map((cost) => (
-        <li className="costList__costItem" key={cost.id}>
-          <Link to={`/${cost.id}`}>
-            <div>
-              <p className="costItem__title">{cost.title}</p>
-              <p className="costItem__price">
-                {cost.payers.map((payer) => payer.name).join(', ')} 先支付 NTD{' '}
-                {cost.price}
-              </p>
-            </div>
-            {cost.price && (
-              <p className="costItem__userCost">{`NTD ${cost.price}`}</p>
-            )}
-          </Link>
-        </li>
+        <CostListItem key={cost.id} costId={cost.id} />
       ))
-      break
   }
 
   return (

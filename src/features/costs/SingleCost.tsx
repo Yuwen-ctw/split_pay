@@ -1,7 +1,7 @@
-import { selectSingleCost, deleteCost } from './costSlice'
+import { selectCostById, deleteCost } from './costSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '../../app/store'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { RootState } from '../../app/store'
 import { Button } from '@mui/material'
@@ -12,7 +12,7 @@ const SingleCost = () => {
   const navigate = useNavigate()
 
   const cost = useSelector((state: RootState) =>
-    selectSingleCost(state, Number(costId))
+    selectCostById(state.costs, Number(costId))
   )
 
   const handleDeleteCost = () => {

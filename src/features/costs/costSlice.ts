@@ -1,4 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import {
+  createSlice,
+  createAsyncThunk,
+  createEntityAdapter,
+} from '@reduxjs/toolkit'
 import { RootState } from '../../app/store'
 
 type GroupType = {
@@ -29,19 +33,13 @@ export interface CostType {
   photos: string[]
 }
 
-interface CostState {
-  group: GroupType
-  costs: CostType[]
-  status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  error?: string | null
-}
+type status = 'idle' | 'loading' | 'succeeded' | 'failed'
+type error = string | undefined
 
-const initialState: CostState = {
-  group: {} as GroupType,
-  costs: [],
-  status: 'idle',
-  error: null,
-}
+const costsAdapter = createEntityAdapter<CostType>({
+  selectId: (cost) => cost.id,
+  sortComparer: (a, b) => b.costTime.localeCompare(a.costTime),
+})
 
 export const fetchAllCost = createAsyncThunk('costs/fetchcosts', async () => {
   const response = await fetch('http://localhost:3001/costs')
@@ -124,7 +122,11 @@ export const editCost = createAsyncThunk(
 
 const costSlice = createSlice({
   name: 'costs',
-  initialState,
+  initialState: costsAdapter.getInitialState({
+    group: {} as GroupType,
+    status: 'idle' as status,
+    error: undefined as error,
+  }),
   reducers: {},
   extraReducers(builder) {
     builder
@@ -136,33 +138,27 @@ const costSlice = createSlice({
       })
       .addCase(fetchAllCost.fulfilled, (state, action) => {
         state.status = 'succeeded'
-        state.costs = action.payload
+        costsAdapter.setAll(state, action.payload)
       })
       .addCase(fetchAllCost.rejected, (state, action) => {
         (state.status = 'failed'), (state.error = action.error.message)
       })
 
       .addCase(deleteCost.fulfilled, (state, action) => {
-        const nextstate = state.costs.filter(
-          (cost) => cost.id !== action.payload
-        )
-        state.costs = nextstate
+        costsAdapter.removeOne(state, action.payload)
       })
       .addCase(addCost.fulfilled, (state, action) => {
-        state.costs.push(action.payload)
+        costsAdapter.setOne(state, action.payload)
       })
       .addCase(editCost.fulfilled, (state, action) => {
-        const nextState = state.costs.map((cost) => {
-          if (cost.id === action.payload.id) return action.payload
-          return cost
-        })
-        state.costs = nextState
+        costsAdapter.upsertOne(state, action.payload)
       })
   },
 })
 
+export const { selectAll: selectAllCosts, selectById: selectCostById } =
+  costsAdapter.getSelectors()
+
 export const selectGroupData = (state: RootState) => state.costs.group
-export const selectAllCosts = (state: RootState) => state.costs.costs
-export const selectSingleCost = (state: RootState, id: number) =>
-  state.costs.costs.find((cost) => cost.id === id)
+
 export default costSlice.reducer

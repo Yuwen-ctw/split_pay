@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { DealersType, selectGroupData, selectSingleCost } from './costSlice'
+import { DealersType, selectGroupData, selectCostById } from './costSlice'
 import { selectUserData } from '../user/userSlice'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
@@ -25,7 +25,7 @@ const WithCostForm = () => {
   const groupData = useSelector(selectGroupData)
   const [formData, setFormData] = useState<CostFormType | null>(null)
   const cost = useSelector((state: RootState) =>
-    selectSingleCost(state, Number(costId))
+    selectCostById(state.costs, Number(costId))
   )
 
   useEffect(() => {

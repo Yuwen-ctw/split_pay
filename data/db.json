@@ -197,12 +197,12 @@
       ]
     },
     {
-      "costTime": "2023-02-10T13:53:00.000Z",
+      "costTime": "2023-02-18T10:52:00.000Z",
       "payers": [
         {
           "id": 111,
           "name": "Yuwen",
-          "price": 321,
+          "price": 799,
           "propotion": 1
         }
       ],
@@ -211,80 +211,26 @@
           "id": 111,
           "name": "Yuwen",
           "propotion": 1,
-          "price": 80.25
+          "price": 199.75
         },
         {
           "id": 222,
           "name": "David",
-          "propotion": 1,
-          "price": 80.25
-        },
-        {
-          "id": 333,
-          "name": "Hsuan",
-          "propotion": 1,
-          "price": 80.25
+          "propotion": 2,
+          "price": 399.5
         },
         {
           "id": 444,
           "name": "Alex",
           "propotion": 1,
-          "price": 80.25
+          "price": 199.75
         }
       ],
-      "price": 321,
-      "title": "測試3",
-      "note": "",
+      "price": 799,
+      "title": "起家雞",
+      "note": "好吃",
       "photos": [],
-      "id": 3
-    },
-    {
-      "id": 837,
-      "costTime": "2023-02-18T05:29:00.000Z",
-      "payers": [
-        {
-          "id": 111,
-          "name": "Yuwen",
-          "price": 10401,
-          "propotion": 1
-        },
-        {
-          "id": 333,
-          "name": "Hsuan",
-          "price": 10401,
-          "propotion": 1
-        },
-        {
-          "id": 222,
-          "name": "David",
-          "price": 2321,
-          "propotion": "fix"
-        }
-      ],
-      "consumers": [
-        {
-          "id": 111,
-          "name": "Yuwen",
-          "propotion": 1,
-          "price": 3853.834
-        },
-        {
-          "id": 222,
-          "name": "David",
-          "propotion": 4,
-          "price": 15415.333
-        },
-        {
-          "id": 444,
-          "name": "Alex",
-          "propotion": 1,
-          "price": 3853.833
-        }
-      ],
-      "price": 23123,
-      "title": "1231",
-      "note": "ca",
-      "photos": []
+      "id": 290
     }
   ]
 }
