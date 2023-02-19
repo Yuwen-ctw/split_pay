@@ -63,6 +63,8 @@ const AdvancedForm = ({
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     if (invalidPay) setInvalidPay(false)
     const value = Math.floor(Number(e.target.value) * 1000) / 1000
+    if (isNaN(value)) return
+
     const targetInfo = groupData.members.find(
       (member) => member.id === Number(e.target.id.replace('payer-', ''))
     )
@@ -136,7 +138,12 @@ const AdvancedForm = ({
 
   const rows = groupData.members.map((member) => {
     const targetInfo = dealers.find((dealer) => dealer.id === member.id)
-    const value = targetInfo ? targetInfo.price : ''
+    let value
+    if (targetInfo) {
+      value = targetInfo.price === 0 ? '' : targetInfo.price
+    } else {
+      value = ''
+    }
     const checked = dealers.some((dealer) => dealer.id === member.id)
     let propotion: string | number = ''
     if (field === 'consumers' && targetInfo) {

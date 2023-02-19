@@ -1,7 +1,7 @@
 // hooks
-import { ChangeEvent, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 // redux
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '../../app/store'
@@ -45,15 +45,15 @@ const CostForm = ({ initFormData }: Props) => {
   })
   const payerNames = payState.payers.map((payer) => payer.name)
   const consumerNames = payState.consumers.map((consumer) => consumer.name)
-
-  const priceRef = useRef<HTMLInputElement | null>(null)
   const [showAdvancedForm, setShowAdvancedForm] =
     useState<AdvancedFormStateType>('none')
 
-  const { register, handleSubmit } = useForm<CostFormType>()
+  const { register, handleSubmit, control, getValues } = useForm<CostFormType>()
 
-  function handlePriceChange(e: ChangeEvent<HTMLInputElement>) {
-    const value = Number(e.target.value)
+  function handlePriceChange() {
+    let value = getValues('price')
+    if (!value) value = 0
+    if (isNaN(value)) return
     const nextConsumers = distributePrice(value, payState.consumers)
     setPayState({
       ...payState,
@@ -147,14 +147,7 @@ const CostForm = ({ initFormData }: Props) => {
     navigate('/')
   }
 
-  const isInvalidPrice = (value: string | number | undefined): boolean => {
-    if (!value) return false
-    if (typeof value === 'string' && value.length === 0) return false
-    return isNaN(Number(value))
-  }
-
   function handleShowAdvancedForm(field: AdvancedFormStateType) {
-    if (isInvalidPrice(priceRef.current?.value)) return
     setShowAdvancedForm(field)
   }
 
@@ -175,33 +168,34 @@ const CostForm = ({ initFormData }: Props) => {
             />
           </div>
           <TextField
-            id="filled-basic"
+            id="costForm-title"
             label="品項"
             variant="filled"
             defaultValue={initFormData.title}
             {...register('title', { required: true })}
             placeholder="請輸入品項名稱"
           />
-          <TextField
-            id="filled-basic"
-            defaultValue={initFormData.price || ''}
-            error={isInvalidPrice(priceRef.current?.value)}
-            helperText={
-              isInvalidPrice(priceRef.current?.value)
-                ? '請輸入正確的數字格式'
-                : ''
-            }
-            label="金額(NTD)"
-            variant="filled"
-            type="text"
-            inputMode="numeric"
-            inputRef={priceRef}
-            {...register('price', {
+          <Controller
+            control={control}
+            name="price"
+            rules={{
               required: true,
-              valueAsNumber: true,
               onChange: handlePriceChange,
-            })}
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                id="costForm-price"
+                placeholder="0"
+                value={payState.price === 0 ? '' : payState.price}
+                label="金額(NTD)"
+                variant="filled"
+                type="text"
+                inputMode="numeric"
+              />
+            )}
           />
+
           <FormControl>
             <div className="costForm__payerSelect">
               <label>誰先付</label>
@@ -259,7 +253,7 @@ const CostForm = ({ initFormData }: Props) => {
             </div>
           </FormControl>
           <TextField
-            id="filled-basic"
+            id="costForm-note"
             defaultValue={initFormData.note}
             label="備註"
             variant="filled"
