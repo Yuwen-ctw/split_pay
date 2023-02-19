@@ -6,7 +6,21 @@ import { Controller, useForm } from 'react-hook-form'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch } from '../../app/store'
 import { selectUserData } from '../user/userSlice'
-import { DealersType, addCost, editCost } from './costSlice'
+import {
+  DealersType,
+  addCost,
+  editCost,
+  selectGroupMembers,
+  MemberType,
+} from './costSlice'
+import {
+  setPrice,
+  setPayer,
+  resetConsumers,
+  selectAllPayers,
+  selectPrice,
+  selectAllConsumers,
+} from './distributedPriceSlice'
 // components & uti
 import {
   TextField,
@@ -18,18 +32,11 @@ import {
   Button,
 } from '@mui/material'
 import AdvancedForm from './AdvancedForm'
-import distributePrice from './utili/distributePrice'
-import dayjs from 'dayjs'
 import { CostFormType } from './WithCostForm'
+import dayjs from 'dayjs'
 
 interface Props {
   initFormData: CostFormType
-}
-
-export type distributedState = {
-  price: number
-  payers: DealersType[]
-  consumers: DealersType[]
 }
 
 export type AdvancedFormStateType = 'payers' | 'consumers' | 'none'
@@ -38,90 +45,54 @@ const CostForm = ({ initFormData }: Props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
   const currentUser = useSelector(selectUserData)
-  const [payState, setPayState] = useState<distributedState>({
-    price: initFormData.price,
-    payers: initFormData.payers,
-    consumers: initFormData.consumers,
-  })
-  const payerNames = payState.payers.map((payer) => payer.name)
-  const consumerNames = payState.consumers.map((consumer) => consumer.name)
+  const members = useSelector(selectGroupMembers)
+  const price = useSelector(selectPrice)
+  const payers = useSelector(selectAllPayers)
+  const consumers = useSelector(selectAllConsumers)
+
   const [showAdvancedForm, setShowAdvancedForm] =
     useState<AdvancedFormStateType>('none')
-
   const { register, handleSubmit, control, getValues } = useForm<CostFormType>()
 
   function handlePriceChange() {
     let value = getValues('price')
     if (!value) value = 0
     if (isNaN(value)) return
-    const nextConsumers = distributePrice(value, payState.consumers)
-    setPayState({
-      ...payState,
-      price: value,
-      payers: [
-        {
-          id: currentUser.id,
-          name: currentUser.name,
-          price: value,
-          propotion: 1,
-        },
-      ],
-      consumers: nextConsumers,
+    // reset payer to currentUser
+    const payer = { id: currentUser.id, name: currentUser.name }
+    // get clean consumer info, in order to reset the distributed price evenly later
+    const nextConsumers: MemberType[] = consumers.map((consumer) => {
+      return { id: consumer.id, name: consumer.name }
     })
+    dispatch(setPrice(value))
+    dispatch(setPayer(payer))
+    dispatch(resetConsumers(nextConsumers))
   }
 
   const handlePayerChange = (event: SelectChangeEvent<string>) => {
     const targetName = event.target.value
-    const targetInfo = initFormData.members.find(
-      (member) => member.name === targetName
-    )
+    const targetInfo = members.find((member) => member.name === targetName)
     if (!targetInfo) return
-    setPayState({
-      ...payState,
-      payers: [
-        {
-          id: targetInfo.id,
-          name: targetInfo.name,
-          price: payState.price,
-          propotion: 1,
-        },
-      ],
-    })
+    dispatch(
+      setPayer({
+        ...targetInfo,
+      })
+    )
   }
   const handleConsumerChange = (event: SelectChangeEvent<string[]>) => {
-    const newConsumerNames = event.target.value
-    let nextConsumers: DealersType[]
-    if (payState.consumers.length > newConsumerNames.length) {
-      // delete target
-      nextConsumers = payState.consumers.filter((consumer) => {
-        return newConsumerNames.includes(consumer.name)
-      })
-    } else {
-      // add target
-      let targetName: string
-      for (let i = 0; i < newConsumerNames.length; i++) {
-        const index = payState.consumers.findIndex(
-          (consumer) => consumer.name === newConsumerNames[i]
-        )
-        if (index === -1) {
-          targetName = newConsumerNames[i]
-          break
-        }
-      }
-      const targetInfo = initFormData.members.find(
-        (member) => member.name === targetName
-      )
-      if (!targetInfo) return
-      nextConsumers = [
-        ...payState.consumers,
-        { ...targetInfo, propotion: 1, price: 0 },
-      ]
-    }
-    nextConsumers = distributePrice(payState.price, nextConsumers)
-    setPayState({ ...payState, consumers: nextConsumers })
+    const selectedValues = event.target.value as string[]
+    if (selectedValues.length === 0) return
+
+    const nextConsumers: Partial<DealersType>[] = []
+    selectedValues.forEach((name) => {
+      const memberInfo = members.find((member) => member.name === name)
+      memberInfo && nextConsumers.push(memberInfo)
+      dispatch(resetConsumers(nextConsumers))
+    })
   }
 
   function onSubmit(data: CostFormType) {
+    if (!price) return
     const times = data.time.split(':')
     const date = dayjs(data.date)
       .hour(Number(times[0]))
@@ -129,9 +100,9 @@ const CostForm = ({ initFormData }: Props) => {
       .toISOString()
     const temPayload = {
       costTime: date,
-      payers: payState.payers,
-      consumers: payState.consumers,
-      price: payState.price,
+      payers,
+      consumers,
+      price,
       title: data.title,
       note: data.note,
       photos: [],
@@ -145,10 +116,6 @@ const CostForm = ({ initFormData }: Props) => {
       dispatch(addCost({ ...temPayload, id: newId }))
     }
     navigate('/')
-  }
-
-  function handleShowAdvancedForm(field: AdvancedFormStateType) {
-    setShowAdvancedForm(field)
   }
 
   return (
@@ -187,7 +154,7 @@ const CostForm = ({ initFormData }: Props) => {
                 {...field}
                 id="costForm-price"
                 placeholder="0"
-                value={payState.price === 0 ? '' : payState.price}
+                value={price === 0 ? '' : price}
                 label="金額(NTD)"
                 variant="filled"
                 type="text"
@@ -200,12 +167,12 @@ const CostForm = ({ initFormData }: Props) => {
             <div className="costForm__payerSelect">
               <label>誰先付</label>
               <Select
-                value={payerNames[0]}
+                value={payers.length ? payers[0].name : ''}
                 onChange={handlePayerChange}
-                renderValue={() => payerNames.join(', ')}
+                renderValue={() => payers.map((el) => el.name).join(', ')}
               >
                 <MenuItem value={''} style={{ visibility: 'hidden' }} />
-                {initFormData.members.map((member) => (
+                {members.map((member) => (
                   <MenuItem key={member.id} value={member.name}>
                     {member.name}
                   </MenuItem>
@@ -213,7 +180,7 @@ const CostForm = ({ initFormData }: Props) => {
               </Select>
               <button
                 type="button"
-                onClick={() => handleShowAdvancedForm('payers')}
+                onClick={() => setShowAdvancedForm('payers')}
               >
                 設定
               </button>
@@ -224,10 +191,10 @@ const CostForm = ({ initFormData }: Props) => {
               <label>分給誰</label>
               <Select
                 multiple
-                value={consumerNames}
+                value={consumers.map((el) => el.name)}
                 onChange={handleConsumerChange}
                 renderValue={(selected) => {
-                  const isEvenly = payState.consumers.every(
+                  const isEvenly = consumers.every(
                     (consumer) => consumer.propotion === 1
                   )
                   const prfix = isEvenly ? '均分給 ' : ''
@@ -235,10 +202,13 @@ const CostForm = ({ initFormData }: Props) => {
                 }}
               >
                 <MenuItem value={''} style={{ visibility: 'hidden' }} />
-                {initFormData.members.map((member) => (
+                {members.map((member) => (
                   <MenuItem key={member.id} value={member.name}>
                     <Checkbox
-                      checked={consumerNames.indexOf(member.name) > -1}
+                      checked={
+                        consumers.findIndex((el) => el.name === member.name) >
+                        -1
+                      }
                     />
                     {member.name}
                   </MenuItem>
@@ -246,7 +216,7 @@ const CostForm = ({ initFormData }: Props) => {
               </Select>
               <button
                 type="button"
-                onClick={() => handleShowAdvancedForm('consumers')}
+                onClick={() => setShowAdvancedForm('consumers')}
               >
                 設定
               </button>
@@ -285,8 +255,6 @@ const CostForm = ({ initFormData }: Props) => {
       {showAdvancedForm !== 'none' && (
         <AdvancedForm
           field={showAdvancedForm}
-          payState={payState}
-          setPayState={setPayState}
           setShowAdvancedForm={setShowAdvancedForm}
         />
       )}

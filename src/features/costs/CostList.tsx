@@ -10,8 +10,7 @@ const CostList = () => {
   const dispatch: AppDispatch = useDispatch()
   const costStatus = useSelector((state: RootState) => state.costs.status)
   const costError = useSelector((state: RootState) => state.costs.error)
-  const costs =
-    useSelector((state: RootState) => selectAllCosts(state.costs)) || []
+  const costs = useSelector((state: RootState) => selectAllCosts(state)) || []
   const navigate = useNavigate()
 
   let content

@@ -12,7 +12,7 @@ const SingleCost = () => {
   const navigate = useNavigate()
 
   const cost = useSelector((state: RootState) =>
-    selectCostById(state.costs, Number(costId))
+    selectCostById(state, Number(costId))
   )
 
   const handleDeleteCost = () => {

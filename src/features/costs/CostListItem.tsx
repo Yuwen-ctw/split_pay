@@ -8,9 +8,7 @@ interface CostListItemProps {
 }
 
 const CostListItem = ({ costId }: CostListItemProps) => {
-  const cost = useSelector((state: RootState) =>
-    selectCostById(state.costs, costId)
-  )
+  const cost = useSelector((state: RootState) => selectCostById(state, costId))
   if (!cost) return null
   return (
     <li className="costList__costItem" key={cost.id}>

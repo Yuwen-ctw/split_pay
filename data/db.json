@@ -202,7 +202,7 @@
         {
           "id": 111,
           "name": "Yuwen",
-          "price": 799,
+          "price": "799",
           "propotion": 1
         }
       ],
@@ -211,22 +211,16 @@
           "id": 111,
           "name": "Yuwen",
           "propotion": 1,
-          "price": 199.75
-        },
-        {
-          "id": 222,
-          "name": "David",
-          "propotion": 2,
           "price": 399.5
         },
         {
           "id": 444,
           "name": "Alex",
           "propotion": 1,
-          "price": 199.75
+          "price": 399.5
         }
       ],
-      "price": 799,
+      "price": "799",
       "title": "起家雞",
       "note": "好吃",
       "photos": [],

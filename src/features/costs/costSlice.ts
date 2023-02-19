@@ -5,14 +5,16 @@ import {
 } from '@reduxjs/toolkit'
 import { RootState } from '../../app/store'
 
+export type MemberType = {
+  id: number
+  name: string
+}
+
 type GroupType = {
   id: number
   title: string
   cover: string
-  members: {
-    id: number
-    name: string
-  }[]
+  members: MemberType[]
 }
 
 export type DealersType = {
@@ -41,6 +43,11 @@ const costsAdapter = createEntityAdapter<CostType>({
   sortComparer: (a, b) => b.costTime.localeCompare(a.costTime),
 })
 
+const membersAdapter = createEntityAdapter<MemberType>({
+  selectId: (member) => member.id,
+  sortComparer: (a, b) => a.id - b.id,
+})
+
 export const fetchAllCost = createAsyncThunk('costs/fetchcosts', async () => {
   const response = await fetch('http://localhost:3001/costs')
   if (response.ok) {
@@ -59,7 +66,7 @@ export const fetchGroupById = createAsyncThunk(
     const response = await fetch(`http://localhost:3001/group/${groupId}`)
     if (response.ok) {
       const data = (await response.json()) as GroupType
-      return data
+      return data.members
     }
     return Promise.reject(`
    fetch single cost failed
@@ -123,7 +130,7 @@ export const editCost = createAsyncThunk(
 const costSlice = createSlice({
   name: 'costs',
   initialState: costsAdapter.getInitialState({
-    group: {} as GroupType,
+    members: membersAdapter.getInitialState(),
     status: 'idle' as status,
     error: undefined as error,
   }),
@@ -131,7 +138,7 @@ const costSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchGroupById.fulfilled, (state, action) => {
-        state.group = action.payload
+        membersAdapter.setAll(state.members, action.payload)
       })
       .addCase(fetchAllCost.pending, (state) => {
         state.status = 'loading'
@@ -157,8 +164,12 @@ const costSlice = createSlice({
 })
 
 export const { selectAll: selectAllCosts, selectById: selectCostById } =
-  costsAdapter.getSelectors()
+  costsAdapter.getSelectors((state: RootState) => state.costs)
 
-export const selectGroupData = (state: RootState) => state.costs.group
+export const {
+  selectAll: selectGroupMembers,
+  selectById: selectGroupMemberById,
+  selectTotal: selectGroupMemberAmount,
+} = membersAdapter.getSelectors((state: RootState) => state.costs.members)
 
 export default costSlice.reducer
