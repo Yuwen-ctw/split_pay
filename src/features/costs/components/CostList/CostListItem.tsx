@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { selectCostById } from './costSlice'
+import { selectCostById } from '../../costSlice'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../app/store'
+import { RootState } from '../../../../app/store'
 
 interface CostListItemProps {
   costId: number

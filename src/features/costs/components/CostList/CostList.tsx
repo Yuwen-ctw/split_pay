@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
-import { selectAllCosts, fetchAllCost, fetchGroupById } from './costSlice'
-import { RootState, AppDispatch } from '../../app/store'
+import { selectAllCosts, fetchAllCost, fetchGroupById } from '../../costSlice'
+import { RootState, AppDispatch } from '../../../../app/store'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'

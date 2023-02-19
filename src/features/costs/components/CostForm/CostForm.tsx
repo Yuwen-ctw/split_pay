@@ -4,15 +4,14 @@ import { useNavigate } from 'react-router-dom'
 import { Controller, useForm } from 'react-hook-form'
 // redux
 import { useSelector, useDispatch } from 'react-redux'
-import { AppDispatch } from '../../app/store'
-import { selectUserData } from '../user/userSlice'
+import { AppDispatch } from '../../../../app/store'
+import { selectUserData } from '../../../user/userSlice'
 import {
-  DealersType,
   addCost,
   editCost,
   selectGroupMembers,
   MemberType,
-} from './costSlice'
+} from '../../costSlice'
 import {
   setPrice,
   setPayer,
@@ -20,7 +19,7 @@ import {
   selectAllPayers,
   selectPrice,
   selectAllConsumers,
-} from './distributedPriceSlice'
+} from '../../distributedPriceSlice'
 // components & uti
 import {
   TextField,
@@ -31,15 +30,15 @@ import {
   Checkbox,
   Button,
 } from '@mui/material'
-import AdvancedForm from './AdvancedForm'
-import { CostFormType } from './WithCostForm'
+import AdvancedForm from './DistributedList'
+import { CostFormType } from '../WithCostForm'
 import dayjs from 'dayjs'
 
 interface Props {
   initFormData: CostFormType
 }
 
-export type AdvancedFormStateType = 'payers' | 'consumers' | 'none'
+export type showDistributedListType = 'payers' | 'consumers' | 'none'
 
 const CostForm = ({ initFormData }: Props) => {
   const navigate = useNavigate()
@@ -50,17 +49,18 @@ const CostForm = ({ initFormData }: Props) => {
   const payers = useSelector(selectAllPayers)
   const consumers = useSelector(selectAllConsumers)
 
-  const [showAdvancedForm, setShowAdvancedForm] =
-    useState<AdvancedFormStateType>('none')
+  const [showDistributedList, setShowDistributedList] =
+    useState<showDistributedListType>('none')
   const { register, handleSubmit, control, getValues } = useForm<CostFormType>()
 
   function handlePriceChange() {
     let value = getValues('price')
     if (!value) value = 0
     if (isNaN(value)) return
-    // reset payer to currentUser
+
+    // payload: reset payer to currentUser
     const payer = { id: currentUser.id, name: currentUser.name }
-    // get clean consumer info, in order to reset the distributed price evenly later
+    // payload: reset the distributed price evenly
     const nextConsumers: MemberType[] = consumers.map((consumer) => {
       return { id: consumer.id, name: consumer.name }
     })
@@ -83,7 +83,7 @@ const CostForm = ({ initFormData }: Props) => {
     const selectedValues = event.target.value as string[]
     if (selectedValues.length === 0) return
 
-    const nextConsumers: Partial<DealersType>[] = []
+    const nextConsumers: MemberType[] = []
     selectedValues.forEach((name) => {
       const memberInfo = members.find((member) => member.name === name)
       memberInfo && nextConsumers.push(memberInfo)
@@ -180,7 +180,7 @@ const CostForm = ({ initFormData }: Props) => {
               </Select>
               <button
                 type="button"
-                onClick={() => setShowAdvancedForm('payers')}
+                onClick={() => setShowDistributedList('payers')}
               >
                 設定
               </button>
@@ -216,7 +216,7 @@ const CostForm = ({ initFormData }: Props) => {
               </Select>
               <button
                 type="button"
-                onClick={() => setShowAdvancedForm('consumers')}
+                onClick={() => setShowDistributedList('consumers')}
               >
                 設定
               </button>
@@ -252,10 +252,10 @@ const CostForm = ({ initFormData }: Props) => {
           </Button>
         </div>
       </form>
-      {showAdvancedForm !== 'none' && (
+      {showDistributedList !== 'none' && (
         <AdvancedForm
-          field={showAdvancedForm}
-          setShowAdvancedForm={setShowAdvancedForm}
+          field={showDistributedList}
+          setShowDistributedList={setShowDistributedList}
         />
       )}
     </div>

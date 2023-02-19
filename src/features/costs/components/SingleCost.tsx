@@ -1,9 +1,9 @@
-import { selectCostById, deleteCost } from './costSlice'
+import { selectCostById, deleteCost } from '../costSlice'
 import { useSelector, useDispatch } from 'react-redux'
-import { AppDispatch } from '../../app/store'
+import { AppDispatch } from '../../../app/store'
 import { useParams, useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
-import { RootState } from '../../app/store'
+import { RootState } from '../../../app/store'
 import { Button } from '@mui/material'
 
 const SingleCost = () => {

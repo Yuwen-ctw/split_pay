@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectGroupMembers } from './costSlice'
+import { selectGroupMembers } from '../../costSlice'
 import Decimal from 'decimal.js-light'
 // actions
 import {
@@ -14,20 +14,23 @@ import {
   selectAllPayers,
   selectAllConsumers,
   selectPrice,
-} from './distributedPriceSlice'
+} from '../../distributedPriceSlice'
 // components
 import { Button, Alert } from '@mui/material'
-import { AdvancedFormStateType } from './CostForm'
-import AdvancedFormItem from './AdvancedFormItem'
+import { showDistributedListType } from './CostForm'
+import DistributedListItem from './DistributedListItem'
 
-interface AdvancedFormProps {
+interface DistributedListProps {
   field: 'payers' | 'consumers'
-  setShowAdvancedForm: React.Dispatch<
-    React.SetStateAction<AdvancedFormStateType>
+  setShowDistributedList: React.Dispatch<
+    React.SetStateAction<showDistributedListType>
   >
 }
 
-const AdvancedForm = ({ field, setShowAdvancedForm }: AdvancedFormProps) => {
+const DistributedList = ({
+  field,
+  setShowDistributedList,
+}: DistributedListProps) => {
   const dispatch = useDispatch()
   const members = useSelector(selectGroupMembers)
   const [showAlert, setShowAlert] = useState<boolean>(false)
@@ -92,12 +95,12 @@ const AdvancedForm = ({ field, setShowAdvancedForm }: AdvancedFormProps) => {
 
   function handleComplete() {
     if (restPrice) return setShowAlert(true)
-    setShowAdvancedForm('none')
+    setShowDistributedList('none')
   }
 
   const rows = members.map((member) => {
     return (
-      <AdvancedFormItem
+      <DistributedListItem
         key={member.id}
         memberId={member.id}
         field={field}
@@ -137,4 +140,4 @@ const AdvancedForm = ({ field, setShowAdvancedForm }: AdvancedFormProps) => {
   )
 }
 
-export default AdvancedForm
+export default DistributedList

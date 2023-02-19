@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from './app/store'
 import { fetchAllGroups } from './features/user/userSlice'
 import Layout from './components/Layout'
-import CostList from './features/costs/CostList'
-import SingleCost from './features/costs/SingleCost'
-import WithCostForm from './features/costs/WithCostForm'
+import CostList from './features/costs/components/CostList'
+import SingleCost from './features/costs/components/SingleCost'
+import WithCostForm from './features/costs/components/WithCostForm'
 
 function App() {
   const dispatch: AppDispatch = useDispatch()

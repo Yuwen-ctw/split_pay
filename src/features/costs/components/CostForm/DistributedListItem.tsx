@@ -6,11 +6,14 @@ import {
 } from '@mui/material'
 import { ChangeEvent } from 'react'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../app/store'
-import { selectGroupMemberById } from './costSlice'
-import { selectConsumerById, selectPayerById } from './distributedPriceSlice'
+import { RootState } from '../../../../app/store'
+import { selectGroupMemberById } from '../../costSlice'
+import {
+  selectConsumerById,
+  selectPayerById,
+} from '../../distributedPriceSlice'
 
-interface AdvancedFormItemProps {
+interface DistributedListItemProps {
   memberId: number
   field: 'payers' | 'consumers'
   onToggle: (e: ChangeEvent<HTMLInputElement>) => void
@@ -18,13 +21,13 @@ interface AdvancedFormItemProps {
   onInputChange: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-const AdvancedFormItem = ({
+const DistributedListItem = ({
   field,
   memberId,
   onToggle,
   onPropotionChange,
   onInputChange,
-}: AdvancedFormItemProps) => {
+}: DistributedListItemProps) => {
   const memberInfo = useSelector((state: RootState) =>
     selectGroupMemberById(state, memberId)
   )
@@ -36,11 +39,9 @@ const AdvancedFormItem = ({
       : useSelector((state: RootState) => selectConsumerById(state, memberId))
 
   const value = dealerInfo ? dealerInfo.price : ''
-  const checked = dealerInfo ? true : false
   let propotion: string | number = ''
   if (field === 'consumers' && dealerInfo) {
-    propotion =
-      typeof dealerInfo.propotion === 'string' ? '' : dealerInfo.propotion
+    propotion = dealerInfo.propotion === 'fix' ? '' : dealerInfo.propotion
   }
   return (
     <li className="advanceForm__dealerItem">
@@ -48,7 +49,7 @@ const AdvancedFormItem = ({
         control={
           <Checkbox
             id={`${memberInfo.id}`}
-            checked={checked}
+            checked={Boolean(dealerInfo)}
             onChange={onToggle}
             inputProps={{ 'aria-label': 'controlled' }}
           />
@@ -104,4 +105,4 @@ const AdvancedFormItem = ({
   )
 }
 
-export default AdvancedFormItem
+export default DistributedListItem
