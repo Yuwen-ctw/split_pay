@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 import CostListItem from './CostListItem'
+import dayjs from 'dayjs'
 
 const CostList = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -13,7 +14,7 @@ const CostList = () => {
   const costs = useSelector((state: RootState) => selectAllCosts(state)) || []
   const navigate = useNavigate()
 
-  let content
+  const content: JSX.Element[] = []
   useEffect(() => {
     if (costStatus === 'idle') {
       dispatch(fetchGroupById(1))
@@ -23,18 +24,25 @@ const CostList = () => {
 
   switch (costStatus) {
     case 'loading':
-      content = <p>Loaing</p>
+      content.push(<p key={'loading'}>Loaing</p>)
       return content
 
     case 'failed':
-      content = <p>{costError}</p>
+      content.push(<p key={'failed'}>{costError}</p>)
       return content
 
-    default:
+    default: {
       if (!costs) return null
-      content = costs.map((cost) => (
-        <CostListItem key={cost.id} costId={cost.id} />
-      ))
+      let currentDate = ''
+      costs.forEach((cost) => {
+        const nextDate = dayjs(cost.costTime).format('YYYY/MM/DD')
+        if (currentDate !== nextDate) {
+          content.push(<h2 key={nextDate}>{nextDate}</h2>)
+          currentDate = nextDate
+        }
+        content.push(<CostListItem key={cost.id} costId={cost.id} />)
+      })
+    }
   }
 
   return (

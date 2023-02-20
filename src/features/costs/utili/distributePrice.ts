@@ -10,7 +10,7 @@ const distributePrice = (price: number, arry: DealersType[]): DealersType[] => {
     totalPropotion += curr.propotion
     return preValue
   }, 0)
-  const restPrice = new Decimal(price).minus(fixedPrice).toNumber()
+  const restPrice = price - fixedPrice
   const prices = getSplitCosts(restPrice, totalPropotion)
 
   const result = arry.map((payer) => {
@@ -28,15 +28,18 @@ const distributePrice = (price: number, arry: DealersType[]): DealersType[] => {
   return result
 }
 
-function getSplitCosts(price: number, memberCount: number): number[] {
+function getSplitCosts(price: number, totalPropotion: number): number[] {
   const groups = []
-  for (const member of distributeNumber(price, memberCount)) {
-    groups.push(member)
+  for (const number of distributeNumber(price, totalPropotion)) {
+    console.log(new Decimal(number).toNumber())
+    groups.push(number)
   }
 
   function* distributeNumber(total: number, divider: number) {
     if (divider === 0) {
       yield 0
+    } else if (divider === 1) {
+      yield Math.round(total * 1000) / 1000
     } else {
       // 取至小數第 3 位 -> * 1000
       let rest = (total * 1000) % divider
